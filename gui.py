@@ -17,10 +17,10 @@ root = Tk()
 root.title("Piston Print")
 root.geometry("270x150+30+30")
 
-uuid_label = Label(root, text="Please Enter Token ")
+uuid_label = Label(root, text="Please Enter Token* ")
 uuid = Entry(root)
 
-alias_label = Label(root, text="Please Enter Alias ")
+alias_label = Label(root, text="Please Enter Alias* ")
 alias = Entry(root)
 
 b = Button(root, text="Submit", command=printtext)

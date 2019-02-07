@@ -1,10 +1,15 @@
 import socketio
 import subprocess
 import base64
-print("Hello")
 
 sio = socketio.Client()
 sio.connect('http://localhost:3000')
+
+@sio.on('connect')
+def on_connect():
+    # Write code for connected on('add user') with uuid and alias
+    # for on_reconnect
+    print("connected!")
 
 
 @sio.on('pdfData')
