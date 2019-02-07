@@ -1,6 +1,7 @@
 import socketio
 import subprocess
 import base64
+import win32print
 
 sio = socketio.Client()
 sio.connect('http://localhost:3000')
@@ -10,6 +11,11 @@ def on_connect():
     # Write code for connected on('add user') with uuid and alias
     # for on_reconnect
     print("connected!")
+
+    with open('credentials.txt', 'r') as file:
+        cred = file.readlines()
+        print(cred)
+
 
 
 @sio.on('pdfData')
@@ -21,6 +27,6 @@ def on_message(data):
             file.write(data_rec)
 
         # Write code to take print out below
-        subprocess.run([f'find . | grep output.ps'])
+        
     except BaseException as e:
         print("in except", str(e))
