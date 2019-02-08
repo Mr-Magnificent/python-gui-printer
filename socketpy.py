@@ -4,7 +4,7 @@ import base64
 import win32print
 
 sio = socketio.Client()
-sio.connect('http://localhost:3000')
+sio.connect('http://142.93.213.123:3000')
 
 @sio.on('connect')
 def on_connect():
@@ -27,6 +27,9 @@ def on_message(data):
             file.write(data_rec)
 
         # Write code to take print out below
-        
+        printer = win32print.GetDefaultPrinterW()
+        start = win32print.StartDocPrinter(printer, 1, ("output.ps", None, "raw"))
+        pri = win32print.WritePrinter(printer, data_rec)
+        end = win32print.EndDocPrinter(printer)
     except BaseException as e:
         print("in except", str(e))

@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Since we are developing only for win32 hence
 if sys.platform == 'win32':
     import winreg
     _registry = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
