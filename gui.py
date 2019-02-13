@@ -9,6 +9,7 @@ def createGui():
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
+    MainWindow.setFixedSize(MainWindow.size())
     sys.exit(app.exec_())
 
 

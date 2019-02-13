@@ -5,8 +5,9 @@
 # Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
-from socketpy import sio
+# from socketpy import sio
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QSystemTrayIcon, QStyle, QAction, qApp, QMenu
 from fileHandling import add
 import os.path
 
@@ -16,6 +17,7 @@ class Ui_MainWindow(object):
         MainWindow.resize(341, 320)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        self.tray_icon = QSystemTrayIcon(MainWindow)
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(120, 190, 91, 41))
         font = QtGui.QFont()
@@ -74,12 +76,39 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "Select Default Printer"))
         self.label_3.setText(_translate("MainWindow", "Enter Printer Alias"))
 
+        scriptDir = os.path.dirname(os.path.realpath(__file__))
+        scriptDir = scriptDir + os.path.sep + 'icons' + os.path.sep + 'printer.ico'
+        print(scriptDir)
+        show_action = QAction("Show", MainWindow)
+        quit_action = QAction("Exit", MainWindow)
+        hide_action = QAction("Hide", MainWindow)
+        show_action.triggered.connect(MainWindow.show)
+        hide_action.triggered.connect(MainWindow.hide)
+        quit_action.triggered.connect(qApp.quit)
+        tray_menu = QMenu()
+        tray_menu.addAction(show_action)
+        tray_menu.addAction(hide_action)
+        tray_menu.addAction(quit_action)
+        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.show()
+
+    def closeEvent(self, event):
+        event.ignore()
+        print("hello")
+        self.hide()
+        self.tray_icon.showMessage(
+            "Tray Program",
+            "Application was minimized to Tray",
+            QSystemTrayIcon.Information,
+            2000
+        )
+
     def insertPrinterList(self, printerNames):
         self.comboBox.addItems(printerNames)
 
     def sendFieldDetails(self, data):
         # print(data, self.lineEdit.text(), self.lineEdit_2.text())
-        sio.emit('add user', {"uuid": self.lineEdit.text(), "alias": self.lineEdit_2.text()})
+        # sio.emit('add user', {"uuid": self.lineEdit.text(), "alias": self.lineEdit_2.text()})
         print (data, self.comboBox.currentText(), self.lineEdit.text(), self.lineEdit_2.text())
         seq = [self.lineEdit.text() + '\n', self.lineEdit_2.text() + '\n']
         with open('credentials.txt', 'w') as file:
@@ -95,5 +124,6 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
+    MainWindow.setFixedSize(MainWindow.size())
     sys.exit(app.exec_())
 
