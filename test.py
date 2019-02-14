@@ -1,33 +1,30 @@
 import win32print
-import array
+import subprocess
+import os
+import winreg
 
+# Show all the printers
 printer = win32print.EnumPrinters(2)
-printerPiston = win32print.OpenPrinter('Canon E500 series Printer')
-print(win32print.GetPrinter(printerPiston))
-print(printerPiston)
-with open('SE front.prn', 'r') as file:
-    line = file.read()
 
-# print(type(line))
-# line = bytearray(line.encode())
-print(len(line))
-id = win32print.StartDocPrinter(printerPiston, 1, ("1549471928476", None, "RAW"))
-length = win32print.WritePrinter(printerPiston, line)
-win32print.EndDocPrinter(printerPiston)
-print(id, length)
-# print(printer)
-# ./gswin64c.exe  -dPrinted -dBATCH -dNOPAUSE -dNOSAFER -q -dNumCopies=1 -sDEVICE=mswinpr2  "G:\python-gui-printer/1549471928476.ps"
-import win32print, win32api
+# get defprinter from the list
+defprinter = win32print.GetDefaultPrinterW()
 
+key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, "SOFTWARE\\GPL Ghostscript\\9.26")
+value, _ = winreg.QueryValueEx(key, "GS_DLL")
 
-# name = win32print.GetDefaultPrinterW()
-# print(name)
-# printDefaults = {"DesiredAccess": win32print.PRINTER_ALL_ACCESS}
-# level = 2
-# handle = win32print.OpenPrinter(name)
-# attributes = win32print.GetPrinter(handle, level)
-# attributes['pDevMode'].Duplex = 1
-# # win32print.SetPrinter(handle, level, attributes, 0)
-# win32print.GetPrinter(handle, level)['pDevMode'].Duplex
-# win32api.ShellExecute(0, 'print', 'test.pdf', '.', '/manualstoprint', 0)
-# print(name)
+gspath = os.path.dirname(value)
+
+args = '"{0}\gswin64c" ' \
+           '-sDEVICE=mswinpr2 ' \
+           '-dBATCH ' \
+           '-dNOPAUSE ' \
+           '-dFitPage ' \
+           '-sOutputFile="%printer%{1}" '.format(gspath ,defprinter)
+
+ghostscript = args + os.path.join(os.getcwd(), '1549471928476.ps')
+ghostscript = ghostscript.replace('\\', '\\\\')
+
+p = subprocess.Popen(ghostscript, shell=True,
+    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+stdout, stderr = p.communicate()
+print(stdout, stderr, sep="\n")
