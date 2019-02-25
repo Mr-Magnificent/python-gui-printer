@@ -30,8 +30,6 @@ class Ui_MainWindow(object):
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox.setGeometry(QtCore.QRect(150, 130, 171, 22))
         self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(20, 30, 81, 21))
         font = QtGui.QFont()
@@ -70,8 +68,6 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pushButton.setText(_translate("MainWindow", "Submit"))
         self.pushButton.clicked.connect(self.sendFieldDetails)
-        self.comboBox.setItemText(0, _translate("MainWindow", "printer 1"))
-        self.comboBox.setItemText(1, _translate("MainWindow", "printer 2"))
         self.label.setText(_translate("MainWindow", "Enter UUID"))
         self.label_2.setText(_translate("MainWindow", "Select Default Printer"))
         self.label_3.setText(_translate("MainWindow", "Enter Printer Alias"))
@@ -104,12 +100,14 @@ class Ui_MainWindow(object):
         )
 
     def insertPrinterList(self, printerNames):
+        print(printerNames)
         self.comboBox.addItems(printerNames)
 
     def sendFieldDetails(self, data):
         # print(data, self.lineEdit.text(), self.lineEdit_2.text())
         # sio.emit('add user', {"uuid": self.lineEdit.text(), "alias": self.lineEdit_2.text()})
         print (data, self.comboBox.currentText(), self.lineEdit.text(), self.lineEdit_2.text())
+        global PRINTER_NAME = self.comboBox.currentText()
         seq = [self.lineEdit.text() + '\n', self.lineEdit_2.text() + '\n']
         with open('credentials.txt', 'w') as file:
             file.writelines(seq)
