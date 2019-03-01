@@ -8,10 +8,12 @@
 # from socketpy import sio
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QSystemTrayIcon, QStyle, QAction, qApp, QMenu
-from fileHandling import add
+from fileHandling import add, remove
 import os.path
+from socketpy import sio
 
 class Ui_MainWindow(object):
+    PRINTER_NAME = None
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(341, 320)
@@ -105,15 +107,19 @@ class Ui_MainWindow(object):
 
     def sendFieldDetails(self, data):
         # print(data, self.lineEdit.text(), self.lineEdit_2.text())
-        # sio.emit('add user', {"uuid": self.lineEdit.text(), "alias": self.lineEdit_2.text()})
+        sio.emit('add user', {"uuid": self.lineEdit.text(), "alias": self.lineEdit_2.text()})
         print (data, self.comboBox.currentText(), self.lineEdit.text(), self.lineEdit_2.text())
-        global PRINTER_NAME = self.comboBox.currentText()
+        Ui_MainWindow.PRINTER_NAME = self.comboBox.currentText()
         seq = [self.lineEdit.text() + '\n', self.lineEdit_2.text() + '\n']
         with open('credentials.txt', 'w') as file:
             file.writelines(seq)
         dirpath = os.path.dirname(os.path.abspath(__file__))
         add("Piston Print", dirpath + "socketpy.py")
+        remove("Piston Print")
 
+    @staticmethod
+    def getPrinterName():
+        return Ui_MainWindow.PRINTER_NAME
 
 if __name__ == "__main__":
     import sys
