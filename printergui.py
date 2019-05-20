@@ -5,7 +5,7 @@
 # Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
-# from socketpy import sio
+from socketpy import sio
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QSystemTrayIcon, QStyle, QAction, qApp, QMenu
 from fileHandling import add, remove
@@ -107,6 +107,7 @@ class Ui_MainWindow(object):
 
     def sendFieldDetails(self, data):
         # print(data, self.lineEdit.text(), self.lineEdit_2.text())
+        sio.connect(self.lineEdit_2.text())
         sio.emit('add user', {"uuid": self.lineEdit.text(), "alias": self.lineEdit_2.text()})
         print (data, self.comboBox.currentText(), self.lineEdit.text(), self.lineEdit_2.text())
         Ui_MainWindow.PRINTER_NAME = self.comboBox.currentText()

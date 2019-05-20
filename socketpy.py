@@ -8,7 +8,6 @@ import socketio
 import win32print
 
 sio = socketio.Client()
-sio.connect('http://192.168.31.12:3000')
 
 @sio.on('connect')
 def on_connect():
